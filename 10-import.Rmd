@@ -3,3 +3,77 @@ title: "10-import"
 output: html_notebook
 ---
 
+# Loading the needed libraries
+
+```{r install_packages}
+library(dplyr)
+library(janitor)
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(ggalluvial)
+library(tidyr)
+library(assertr)
+library(lubridate)
+```
+
+# Loading the data
+
+The dataset that I have selected for this project contains information on every known satellite orbitting the Earth. 
+
+This is a database compiled by the Union of Concerned Scientists. It contains information on more than 2000 live satellites. The dataset is updated "roughly quarterly." The following information is available in the dataset:
+
+* Name of Satellite
+* Country of origin
+* Country of operator
+* Operating organization
+* Users
+* Purpose
+* Orbit type
+* Orbit class
+* Information about orbit (eccentricity, inclination etc)
+* Date of Launch + Other launch details (location, launch vehicle etc.)
+* Expected lifetime
+* Contractor (with country)
+
+In the below code chunk, I load the data into R and do some preliminary data exploration to understand what data is contained in the dataset. 
+
+```{r}
+satellite_info <- read_excel("UCS_Satellite_Database_4-1-2019.xlsx") %>% clean_names()
+
+satellite_info <- satellite_info %>% select(name_of_satellite_alternate_names:comments)
+names(satellite_info)
+dim(satellite_info)
+#str(satellite_info)
+```
+
+In the above code chunk, I read in and edit the dataset to convert it into a more usable format. I replaced the spaces in the column names with underscores ("_") using clean_names() and selected only the columns with information in them, deleting the empty columns in the dataset. The dataset has dimensions of 2062X27, ie, it has 2062 observations over 27 variables. Most of the information is in character format, while the technical information is either numeric or doubles. 
+
+Now, we can write assert functions to check the dataset and clean it.
+
+```{r assert}
+is.date <- function(x) {
+  !all(is.na(as.Date(as.character(x),format="%y/%m/%d")))
+}
+
+satellite_info %>% assert(is.date(satellite_info$Date.of.Launch))
+satellite_info %>% assert(is.numeric(satellite_info$`Perigee.(km)`))
+satellite_info %>% assert(is.numeric(satellite_info$`Apogee.(km)`))
+satellite_info %>% assert(is.numeric(satellite_info$Eccentricity))
+
+# 1/2.5 - with assert statement(s)
+# What are you attempting to do with these assert statements? I don’t think these are really checking anything. For example, if you change “is.numeric” to “is.character” for ‘Perigee.(km)’, you get the same output. 
+# 2/2.5 - cleaning code (type conversion, NA recoding, other)
+# I guess you cleaned with the is.date function you made for “Date.of.Launch”, but it is kind of unclear since you put it within the assert. You should convert the variable first, and then run an assert to make sure it gives you the correct output.
+# 1/1.5 - with description of rationale
+# Give explanations about the asserts and cleans you make.
+# 0.5/1 - with tidyverse/dplyr code
+# You index with $, instead of using tidy code to run the assert statements
+```
+
+# Defining the problem
+
+Some interesting things that I noticed while exploring the data was the breakup of satellites by country, and purpose. Each satellite has numerous associated variables related to its own features or that of its orbit. In this project, I will try and determine the variables controlling the purpose that the satellite is being used for. 
+
+Motivating question(s): 1) Predict the purpose of a satellite based on other information provided regarding Orbital information and other associated information. 
+

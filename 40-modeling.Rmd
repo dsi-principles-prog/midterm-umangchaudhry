@@ -3,17 +3,27 @@ title: "40-modeling"
 output: html_notebook
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+# Modeling
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+## Prepare the data
 
-```{r}
-plot(cars)
+```{r modeling_prep}
+satellite_info_fe <- "satellite_info_fe.csv"
+
+satellite_info_fe <- satellite_info %>% 
+  mutate_at(c("eccentricity", "period_minutes"),
+            list(std = scale2),
+            na.rm = TRUE) %>%
+  select(contains("std"), everything()) %>%
+  mutate_at(c("date_of_launch"), list(Launchday = dayoflaunch)) %>%
+  select(contains("day"), everything()) %>%
+  mutate_at(c("perigee_km"), list(ptype = perigee_type)) %>%
+  select(contains("ptype"), perigee_km, everything()) %>%
+  mutate_at(c("inclination_degrees"), list(itype = inclination_type)) %>%
+  select(contains("itype"), inclination_degrees, everything()) %>%   
+  write_csv(satellite_info_fe)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+## Future Work
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
-
+## Run Models

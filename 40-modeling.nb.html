@@ -1749,21 +1749,41 @@ summary {
 
 
 <!-- rnb-text-begin -->
-<p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a> Notebook. When you execute code within the notebook, the results appear beneath the code.</p>
-<p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Cmd+Shift+Enter</em>.</p>
+<div id="modeling" class="section level1">
+<h1>Modeling</h1>
+<div id="prepare-the-data" class="section level2">
+<h2>Prepare the data</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2F0ZWxsaXRlX2luZm9fZmUgPC0gXCJzYXRlbGxpdGVfaW5mb19mZS5jc3ZcIlxuXG5zYXRlbGxpdGVfaW5mb19mZSA8LSBzYXRlbGxpdGVfaW5mbyAlPiUgXG4gIG11dGF0ZV9hdChjKFwiZWNjZW50cmljaXR5XCIsIFwicGVyaW9kX21pbnV0ZXNcIiksXG4gICAgICAgICAgICBsaXN0KHN0ZCA9IHNjYWxlMiksXG4gICAgICAgICAgICBuYS5ybSA9IFRSVUUpICU+JVxuICBzZWxlY3QoY29udGFpbnMoXCJzdGRcIiksIGV2ZXJ5dGhpbmcoKSkgJT4lXG4gIG11dGF0ZV9hdChjKFwiZGF0ZV9vZl9sYXVuY2hcIiksIGxpc3QoTGF1bmNoZGF5ID0gZGF5b2ZsYXVuY2gpKSAlPiVcbiAgc2VsZWN0KGNvbnRhaW5zKFwiZGF5XCIpLCBldmVyeXRoaW5nKCkpICU+JVxuICBtdXRhdGVfYXQoYyhcInBlcmlnZWVfa21cIiksIGxpc3QocHR5cGUgPSBwZXJpZ2VlX3R5cGUpKSAlPiVcbiAgc2VsZWN0KGNvbnRhaW5zKFwicHR5cGVcIiksIHBlcmlnZWVfa20sIGV2ZXJ5dGhpbmcoKSkgJT4lXG4gIG11dGF0ZV9hdChjKFwiaW5jbGluYXRpb25fZGVncmVlc1wiKSwgbGlzdChpdHlwZSA9IGluY2xpbmF0aW9uX3R5cGUpKSAlPiVcbiAgc2VsZWN0KGNvbnRhaW5zKFwiaXR5cGVcIiksIGluY2xpbmF0aW9uX2RlZ3JlZXMsIGV2ZXJ5dGhpbmcoKSkgJT4lICAgXG4gIHdyaXRlX2NzdihzYXRlbGxpdGVfaW5mb19mZSlcbmBgYCJ9 -->
+<pre class="r"><code>satellite_info_fe &lt;- &quot;satellite_info_fe.csv&quot;
+
+satellite_info_fe &lt;- satellite_info %&gt;% 
+  mutate_at(c(&quot;eccentricity&quot;, &quot;period_minutes&quot;),
+            list(std = scale2),
+            na.rm = TRUE) %&gt;%
+  select(contains(&quot;std&quot;), everything()) %&gt;%
+  mutate_at(c(&quot;date_of_launch&quot;), list(Launchday = dayoflaunch)) %&gt;%
+  select(contains(&quot;day&quot;), everything()) %&gt;%
+  mutate_at(c(&quot;perigee_km&quot;), list(ptype = perigee_type)) %&gt;%
+  select(contains(&quot;ptype&quot;), perigee_km, everything()) %&gt;%
+  mutate_at(c(&quot;inclination_degrees&quot;), list(itype = inclination_type)) %&gt;%
+  select(contains(&quot;itype&quot;), inclination_degrees, everything()) %&gt;%   
+  write_csv(satellite_info_fe)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the toolbar or by pressing <em>Cmd+Option+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the <em>Preview</em> button or press <em>Cmd+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.</p>
+</div>
+<div id="future-work" class="section level2">
+<h2>Future Work</h2>
+</div>
+<div id="run-models" class="section level2">
+<h2>Run Models</h2>
 <!-- rnb-text-end -->
+</div>
+</div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiNDAtbW9kZWxpbmciCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KClRoaXMgaXMgYW4gW1IgTWFya2Rvd25dKGh0dHA6Ly9ybWFya2Rvd24ucnN0dWRpby5jb20pIE5vdGVib29rLiBXaGVuIHlvdSBleGVjdXRlIGNvZGUgd2l0aGluIHRoZSBub3RlYm9vaywgdGhlIHJlc3VsdHMgYXBwZWFyIGJlbmVhdGggdGhlIGNvZGUuIAoKVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkNtZCtTaGlmdCtFbnRlciouIAoKYGBge3J9CnBsb3QoY2FycykKYGBgCgpBZGQgYSBuZXcgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpJbnNlcnQgQ2h1bmsqIGJ1dHRvbiBvbiB0aGUgdG9vbGJhciBvciBieSBwcmVzc2luZyAqQ21kK09wdGlvbitJKi4KCldoZW4geW91IHNhdmUgdGhlIG5vdGVib29rLCBhbiBIVE1MIGZpbGUgY29udGFpbmluZyB0aGUgY29kZSBhbmQgb3V0cHV0IHdpbGwgYmUgc2F2ZWQgYWxvbmdzaWRlIGl0IChjbGljayB0aGUgKlByZXZpZXcqIGJ1dHRvbiBvciBwcmVzcyAqQ21kK1NoaWZ0K0sqIHRvIHByZXZpZXcgdGhlIEhUTUwgZmlsZSkuIAoKVGhlIHByZXZpZXcgc2hvd3MgeW91IGEgcmVuZGVyZWQgSFRNTCBjb3B5IG9mIHRoZSBjb250ZW50cyBvZiB0aGUgZWRpdG9yLiBDb25zZXF1ZW50bHksIHVubGlrZSAqS25pdCosICpQcmV2aWV3KiBkb2VzIG5vdCBydW4gYW55IFIgY29kZSBjaHVua3MuIEluc3RlYWQsIHRoZSBvdXRwdXQgb2YgdGhlIGNodW5rIHdoZW4gaXQgd2FzIGxhc3QgcnVuIGluIHRoZSBlZGl0b3IgaXMgZGlzcGxheWVkLgoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiNDAtbW9kZWxpbmciCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCiMgTW9kZWxpbmcKCiMjIFByZXBhcmUgdGhlIGRhdGEKCmBgYHtyIG1vZGVsaW5nX3ByZXB9CnNhdGVsbGl0ZV9pbmZvX2ZlIDwtICJzYXRlbGxpdGVfaW5mb19mZS5jc3YiCgpzYXRlbGxpdGVfaW5mb19mZSA8LSBzYXRlbGxpdGVfaW5mbyAlPiUgCiAgbXV0YXRlX2F0KGMoImVjY2VudHJpY2l0eSIsICJwZXJpb2RfbWludXRlcyIpLAogICAgICAgICAgICBsaXN0KHN0ZCA9IHNjYWxlMiksCiAgICAgICAgICAgIG5hLnJtID0gVFJVRSkgJT4lCiAgc2VsZWN0KGNvbnRhaW5zKCJzdGQiKSwgZXZlcnl0aGluZygpKSAlPiUKICBtdXRhdGVfYXQoYygiZGF0ZV9vZl9sYXVuY2giKSwgbGlzdChMYXVuY2hkYXkgPSBkYXlvZmxhdW5jaCkpICU+JQogIHNlbGVjdChjb250YWlucygiZGF5IiksIGV2ZXJ5dGhpbmcoKSkgJT4lCiAgbXV0YXRlX2F0KGMoInBlcmlnZWVfa20iKSwgbGlzdChwdHlwZSA9IHBlcmlnZWVfdHlwZSkpICU+JQogIHNlbGVjdChjb250YWlucygicHR5cGUiKSwgcGVyaWdlZV9rbSwgZXZlcnl0aGluZygpKSAlPiUKICBtdXRhdGVfYXQoYygiaW5jbGluYXRpb25fZGVncmVlcyIpLCBsaXN0KGl0eXBlID0gaW5jbGluYXRpb25fdHlwZSkpICU+JQogIHNlbGVjdChjb250YWlucygiaXR5cGUiKSwgaW5jbGluYXRpb25fZGVncmVlcywgZXZlcnl0aGluZygpKSAlPiUgICAKICB3cml0ZV9jc3Yoc2F0ZWxsaXRlX2luZm9fZmUpCmBgYAoKIyMgRnV0dXJlIFdvcmsKCiMjIFJ1biBNb2RlbHM=</div>
 
 
 

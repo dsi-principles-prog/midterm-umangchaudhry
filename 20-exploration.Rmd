@@ -3,3 +3,68 @@ title: "20-exploration"
 output: html_notebook
 ---
 
+# Data Exploration
+
+```{r, warning=FALSE}
+
+library(ggrepel)
+flows <- satellite_info %>% #new data object
+  filter(!is.na(users), !is.na(purpose)) %>% 
+  group_by(users, #group by origin, destination, and airline summarize using counts
+           purpose) %>%
+  summarise(count = n())
+
+flows <- flows %>% mutate(userType = users, satPurpose = purpose)
+
+flow1 <- separate(flows, users, c("type", "subtype"), sep = "/")
+flow1 <- separate(flow1, purpose, c("purpose", "purpose2"), sep = "/")
+flow1 <- separate(flow1, purpose, c("purpose", "purpose3"), sep = " ")
+
+
+ggplot(flow1, aes(y=count, axis1=type, axis2=purpose)) +
+  geom_alluvium(aes(fill = type)) +
+  geom_stratum(alpha = 0.5, width = 1/12, fill = "black", color = "grey") +
+  geom_label(stat = "stratum", label.strata = TRUE) +
+  scale_fill_manual(name = "Satellite User",
+                    values = c("Civil" = "red",
+                               "Commercial" = "green",
+                               "Government" = "darkblue",
+                               "Military" = "purple")) +
+  theme(axis.text.x = element_blank())
+  
+```
+
+The alluvial plot above demonstrates that a majority of the satellies in space are commercial, followed by Government, Military and Civil. Most commercial satellites are used either for communication or earth observation. Some are used for technology purposes. A majority of satellites are used for either communication or earth observation, while other purposes have significantly fewer satellites. 
+
+```{r, warning=FALSE}
+flows2 <- satellite_info %>% #new data object
+  filter(!is.na(type_of_orbit), !is.na(purpose)) %>% 
+  group_by(type_of_orbit, #group by origin, destination, and airline summarize using counts
+           purpose) %>%
+  summarise(count = n())
+
+
+
+flow2 <- separate(flows2, purpose, c("purpose", "purpose2"), sep = "/")
+flow2 <- separate(flow2, purpose, c("purpose", "purpose3"), sep = " ")
+
+
+
+ggplot(flow2, aes(y=count, axis1=type_of_orbit, axis2=purpose)) +
+  geom_alluvium(aes(fill = type_of_orbit)) + 
+  geom_stratum(width = 1/12, alpha = 0.3, fill = "black", color = "grey") +
+  geom_label(stat = "stratum", label.strata = TRUE) +
+  scale_fill_manual(name = "Type of Orbit", 
+                    values = c("Cislunar" = "black",
+                               "Deep Highly Eccentric" = "blue",
+                               "Elliptical" = "green",
+                               "Equatorial" = "yellow",
+                               "Molniya" = "orange",
+                               "Non-Polar Inclined" = "red",
+                               "Polar" = "maroon",
+                               "Sun-Sychronous" = "cyan",
+                               "Sun-Synchronous" = "violet")) + 
+  theme(axis.text.x = element_blank())
+```
+
+The alluvial plot above shows that a majority of the satellies used are Sun-Synchronous. Most earth observation satellites are sun-synchronous while most communication satellites are either polar or non-polar. 
