@@ -8,22 +8,23 @@ output: html_notebook
 ## Prepare the data
 
 ```{r modeling_prep}
+#Add the features you created for perigee type and day of launch to this code chunk. Use scoped mutates to apply the function to the correct column. Use the syntax seen for standardization and inclination type to use the scoped mutate. 
+
 satellite_info_fe <- "satellite_info_fe.csv"
 
-satellite_info_fe <- satellite_info %>% 
+satellite_info_fe <- satellite_info %>%
   mutate_at(c("eccentricity", "period_minutes"),
             list(std = scale2),
             na.rm = TRUE) %>%
+  verify(sd(eccentricity_std) == 1) %>%
   select(contains("std"), everything()) %>%
-  mutate_at(c("date_of_launch"), list(Launchday = dayoflaunch)) %>%
-  select(contains("day"), everything()) %>%
-  mutate_at(c("perigee_km"), list(ptype = perigee_type)) %>%
-  select(contains("ptype"), perigee_km, everything()) %>%
   mutate_at(c("inclination_degrees"), list(itype = inclination_type)) %>%
-  select(contains("itype"), inclination_degrees, everything()) %>%   
+  select(contains("itype"), inclination_degrees, everything()) %>%
   write_csv(satellite_info_fe)
 ```
 
 ## Future Work
+
+Create features for Perigee Type and Day of Launch (Please look at 30-feature-engineering and Issues #1 and #2 for further guidance).
 
 ## Run Models

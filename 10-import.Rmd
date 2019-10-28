@@ -5,7 +5,7 @@ output: html_notebook
 
 # Loading the needed libraries
 
-```{r install_packages}
+```{r install_packages, warning=FALSE, include=FALSE}
 library(dplyr)
 library(janitor)
 library(readxl)
@@ -38,7 +38,7 @@ This is a database compiled by the Union of Concerned Scientists. It contains in
 
 In the below code chunk, I load the data into R and do some preliminary data exploration to understand what data is contained in the dataset. 
 
-```{r}
+```{r loading_data}
 satellite_info <- read_excel("UCS_Satellite_Database_4-1-2019.xlsx") %>% clean_names()
 
 satellite_info <- satellite_info %>% select(name_of_satellite_alternate_names:comments)
@@ -51,24 +51,21 @@ In the above code chunk, I read in and edit the dataset to convert it into a mor
 
 Now, we can write assert functions to check the dataset and clean it.
 
-```{r assert}
+```{r assert/verify}
 is.date <- function(x) {
   !all(is.na(as.Date(as.character(x),format="%y/%m/%d")))
 }
 
-satellite_info %>% assert(is.date(satellite_info$Date.of.Launch))
-satellite_info %>% assert(is.numeric(satellite_info$`Perigee.(km)`))
-satellite_info %>% assert(is.numeric(satellite_info$`Apogee.(km)`))
-satellite_info %>% assert(is.numeric(satellite_info$Eccentricity))
+satellite_info %>% assert(is.date(satellite_info$date_of_launch)) #check if the values are in the correct date format
 
-# 1/2.5 - with assert statement(s)
-# What are you attempting to do with these assert statements? I don’t think these are really checking anything. For example, if you change “is.numeric” to “is.character” for ‘Perigee.(km)’, you get the same output. 
-# 2/2.5 - cleaning code (type conversion, NA recoding, other)
-# I guess you cleaned with the is.date function you made for “Date.of.Launch”, but it is kind of unclear since you put it within the assert. You should convert the variable first, and then run an assert to make sure it gives you the correct output.
-# 1/1.5 - with description of rationale
-# Give explanations about the asserts and cleans you make.
-# 0.5/1 - with tidyverse/dplyr code
-# You index with $, instead of using tidy code to run the assert statements
+satellite_info %>% verify(perigee_km > 0) #perigee can have values only greater than 0km
+satellite_info %>% verify(apogee_km > 0) #apogee can have values only greater than 0km
+
+# Eccentricity is a feature that always has values greater than 0. This dataset contains 1 error. That observation is being filtered out to have a correct dataset.
+satellite_info <-  satellite_info %>% filter(eccentricity >= 0)
+satellite_info %>% verify(eccentricity>=0)
+
+satellite_info %>% verify(period_minutes>=0) #Period of a satellite can have values only greater than 0 mins.
 ```
 
 # Defining the problem

@@ -5,7 +5,7 @@ output: html_notebook
 
 # Data Exploration
 
-```{r, warning=FALSE}
+```{r viz1, warning=FALSE}
 
 library(ggrepel)
 flows <- satellite_info %>% #new data object
@@ -36,7 +36,7 @@ ggplot(flow1, aes(y=count, axis1=type, axis2=purpose)) +
 
 The alluvial plot above demonstrates that a majority of the satellies in space are commercial, followed by Government, Military and Civil. Most commercial satellites are used either for communication or earth observation. Some are used for technology purposes. A majority of satellites are used for either communication or earth observation, while other purposes have significantly fewer satellites. 
 
-```{r, warning=FALSE}
+```{r viz2, warning=FALSE}
 flows2 <- satellite_info %>% #new data object
   filter(!is.na(type_of_orbit), !is.na(purpose)) %>% 
   group_by(type_of_orbit, #group by origin, destination, and airline summarize using counts

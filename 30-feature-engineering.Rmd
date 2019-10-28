@@ -5,56 +5,54 @@ output: html_notebook
 
 # Create Features to improve predictive model for satellite purposes
 
-Once the data has been cleaned and verified, we can start creating engineered features to add to the dataset. The features being engineered in this project are all designed to be used with scoped mutates, on specifiable columns to mutate upon. 
+Once the data has been cleaned and verified, we can start creating engineered features to add to the dataset. **ALL The features being engineered in this project are all designed to be used with scoped mutates, on specifiable columns to mutate upon.** 
 
 ## Standardization
 
 The first engineered featured I will create will allow for the standardization of the values of information regarding the orbit characteristics such as Eccentricity and Period. 
-Below, I create a function called scale2 that standardizes the values given to it around a mean value of 0. I then use a scoped mutate to apply the function to all observations in the eccentricty and period_minutes columns, and create new columns that contain the standardized values. This will help pick out any outliers and any possible clusters that form when looking at that particular data values. Based on that, some information could be extracted to help evaluate the purpose of the satellite given that information. 
+
+Below, I create a function called scale2 that standardizes the values given to it around a mean value of 0 (Subtracting the mean and then dividing by the standard deviation). I then use a scoped mutate to apply the function to all observations in the eccentricty and period_minutes columns, and create new columns that contain the standardized values. This will help pick out any outliers and any possible clusters that form when looking at that particular data values. Based on that, some information could be extracted to help evaluate the purpose of the satellite given that information.
 
 ```{r standardization}
 scale2 <- function(x, na.rm = FALSE) (x - mean(x, na.rm = na.rm)) / sd(x, na.rm = na.rm)
 
-sat_info <- satellite_info %>% 
-  mutate_at(c("eccentricity", "period_minutes"), list(std = scale2), na.rm = TRUE) %>% 
-  select(contains("std"), everything())
+#Below is an example of how the scoped mutate will work with this function. Mutate at a specific column and pass through the function. Follow similar structure to add the remaining features to the dataframe. 
+
+sat_info <- satellite_info %>%
+ mutate_at(c("eccentricity", "period_minutes"), list(std = scale2), na.rm = TRUE) %>%
+ select(contains("std"), everything())
+
+sat_info %>% verify(sd(eccentricity_std) == 1) #verify whether the standard deviation of the now standardized data is 1. 
+
 ```
 
-## Day of Launch
+## Day of Launch - Feature to add
 
-The second engineered feature that I am adding to this dataset is a column that uses the information given in the date_of_launch column and provides the day of the week the launch took place. This is done using the wday function from the lubridate library. The created function dayoflaunch will be applied to the given column using a scoped mutate, to create a new column called Launchday. The function takes in a parameter (value from column) and converts it to the day of launch (value of 1-7).
+The second engineered feature that I am adding to this dataset is a column that uses the information given in the date_of_launch column and provides the day of the week the launch took place. This is done using functions from the lubridate library. **The created function dayoflaunch will be applied to the given column using a scoped mutate, to create a new column called Launchday.** The function takes in a parameter (value from column) and converts it to the day of launch (value of 1-7).
 
 ```{r dayoflaunch}
+#Please visit issue #1 to understand how to approach writing and testing this feature. The code chunk will not work until function has been created. 
 dayoflaunch <- function() {
 
 }
-
-dayoflaunch(today())
-
-sat_info <- sat_info %>% 
-  mutate_at(c("date_of_launch"), list(Launchday = dayoflaunch)) %>% 
-  select(contains("day"), everything())
 ```
 
-## Perigee Type
+## Perigee Type - Feature to add
 
-Upon some preliminary examination of the distribution of the Perigee of the orbit of each satellite, it can be seen that the values tend to cluster in three different ranges; less than 10,000, between 10,000 and 30,000 and greater than 30,000. I use this information to divide these values into categories of high, medium and low in the function perigee_type. This is applied to the perigee column (or any other column based on changes to the associated ranges) using scoped mutates. 
+Upon some preliminary examination of the distribution of the Perigee of the orbit of each satellite, it can be seen that the values tend to cluster in three different ranges; less than 10,000, between 10,000 and 30,000 and greater than 30,000. I use this information to divide these values into categories of high, medium and low in the function perigee_type. **This is applied to the perigee column (or any other column based on changes to the associated ranges) using scoped mutates, to create a new column called ptype containing the respective value of "High", "Medium" or "Low".** 
 
 ```{r perigee_type}
+#Please visit issue #2 to understand how to approach writing and testing this feature. The code chunk will not work until function has been created. 
 hist(satellite_info$perigee_km)
 
-perigee_type <- function(x, na.rm = TRUE) {
+perigee_type <- function() {
 
 }
-
-sat_info <- sat_info %>% 
-  mutate_at(c(""), list(ptype = perigee_type)) %>% 
-  select(contains("ptype"), perigee_km, everything())
 ```
 
 ## Inclination Type
 
-Similarly, inclination can be divded into high or low based on the observed distribution from the histogram. It can be seen that the distribution of satellites based upon inclination can be clustered into two sets; below 50 and above 50. This information can be used to divide these values into categories of high or low in the function inclination_type. This is applied to the inclination column (or any other column based on changes to the associated ranges) using scoped mutates. 
+Similarly, inclination can be divded into high or low based on the observed distribution from the histogram. It can be seen that the distribution of satellites based upon inclination can be clustered into two sets; below 50 and above 50. This information can be used to divide these values into categories of high or low in the function inclination_type. **This is applied to the inclination column (or any other column based on changes to the associated ranges) using scoped mutates, creating a column called itype that stores the respective values of "Low" or "High".**
 
 ```{r inclination_type}
 
