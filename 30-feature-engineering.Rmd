@@ -10,24 +10,23 @@ Once the data has been cleaned and verified, we can start creating engineered fe
 ## Standardization
 
 The first engineered featured I will create will allow for the standardization of the values of information regarding the orbit characteristics such as Eccentricity and Period. 
-Below, I create a function called scale2 that standardizes the values given to it around a mean value of 0. I then use a scoped mutate to apply the function to all observations in the Eccentricty and Period.(minutes) columns, and create new columns that contain the standardized values. This will help pick out any outliers and any possible clusters that form when looking at that particular data values. Based on that, some information could be extracted to help evaluate the purpose of the satellite given that information. 
+Below, I create a function called scale2 that standardizes the values given to it around a mean value of 0. I then use a scoped mutate to apply the function to all observations in the eccentricty and period_minutes columns, and create new columns that contain the standardized values. This will help pick out any outliers and any possible clusters that form when looking at that particular data values. Based on that, some information could be extracted to help evaluate the purpose of the satellite given that information. 
 
 ```{r standardization}
-scale2 <- function()
+scale2 <- function(x, na.rm = FALSE) (x - mean(x, na.rm = na.rm)) / sd(x, na.rm = na.rm)
 
 sat_info <- satellite_info %>% 
-  mutate_at(c("", ""), list(std = scale2), na.rm = TRUE) %>% 
+  mutate_at(c("eccentricity", "period_minutes"), list(std = scale2), na.rm = TRUE) %>% 
   select(contains("std"), everything())
 ```
 
 ## Day of Launch
 
-The second engineered feature that I am adding to this dataset is a column that uses the information given in the Date.of.Launch column and provides the day of the week the launch took place. This is done using the wday function from the lubridate library. The created function dayoflaunch will be applied to the given column using a scoped mutate, to create a new column called Launchday.
+The second engineered feature that I am adding to this dataset is a column that uses the information given in the date_of_launch column and provides the day of the week the launch took place. This is done using the wday function from the lubridate library. The created function dayoflaunch will be applied to the given column using a scoped mutate, to create a new column called Launchday. The function takes in a parameter (value from column) and converts it to the day of launch (value of 1-7).
 
 ```{r dayoflaunch}
-dayoflaunch <- function(date) {
-  dayoflaunch <- wday(date)
-  dayoflaunch
+dayoflaunch <- function() {
+
 }
 
 dayoflaunch(today())
