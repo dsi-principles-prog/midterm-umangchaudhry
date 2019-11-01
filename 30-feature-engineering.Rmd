@@ -32,9 +32,16 @@ The second engineered feature that I am adding to this dataset is a column that 
 
 ```{r dayoflaunch}
 #Please visit issue #1 to understand how to approach writing and testing this feature. The code chunk will not work until function has been created. 
-dayoflaunch <- function() {
 
+dayoflaunch <- function(x, na.rm=F) {
+  wday(x) #function that will take a vector and return the day of week as an int
 }
+
+satellite_info<-satellite_info %>%
+ mutate_at(c("date_of_launch"), list(dayoflaunch = dayoflaunch), na.rm = TRUE) %>%
+ select(contains("dayoflaunch"), everything())
+
+satellite_info %>%  assert(within_bounds(0,7),dayoflaunch)
 ```
 
 ## Perigee Type - Feature to add

@@ -23,6 +23,18 @@ satellite_info_fe <- satellite_info %>%
   write_csv(satellite_info_fe)
 ```
 
+
+```{r}
+satellite_info_fe_1<-satellite_info %>%
+ mutate_at(c("date_of_launch"), list(dayoflaunch = dayoflaunch), na.rm = TRUE) %>%
+ select(contains("dayoflaunch"), everything())
+
+satellite_info_fe_1 %>%  
+  assert(in_set(c(1:7)),dayoflaunch)
+
+
+```
+
 ## Future Work
 
 Create features for Perigee Type and Day of Launch (Please look at 30-feature-engineering and Issues #1 and #2 for further guidance).
