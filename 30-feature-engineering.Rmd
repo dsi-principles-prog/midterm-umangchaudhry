@@ -38,7 +38,7 @@ dayoflaunch <- function(x, na.rm=F) {
 }
 
 
-dayoflaunch(mdy("10/31/2019"))#testing to see if the function works correctly by giving it today's day
+dayoflaunch(mdy("10/31/2019")) #testing to see if the function works correctly by giving it today's day
 
 satellite_info<-satellite_info %>%
  mutate_at(c("date_of_launch"), list(dayoflaunch = dayoflaunch), na.rm = TRUE) %>%
